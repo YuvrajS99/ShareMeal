@@ -28,7 +28,7 @@ export default function Login() {
       setToken(data.token);
 
       const role = data?.user?.role || decodeJwt(data.token)?.role;
-      if (role === "ngo") navigate("/ngo", { replace: true });
+      if (role?.toLowerCase() === "ngo") navigate("/ngo", { replace: true });
       else navigate("/donor", { replace: true });
     } catch (err) {
       setError(err.message || "Login failed");
