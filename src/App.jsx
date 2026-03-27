@@ -47,7 +47,7 @@ function RootRedirect() {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<RootRedirect />} />
+      <Route path="/" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
