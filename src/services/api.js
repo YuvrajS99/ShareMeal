@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL =
-  import.meta.env.VITE_BACKEND_URL || "https://sharemeal-jcwx.onrender.com";
+  import.meta.env.VITE_BACKEND_URL || "https://sharemeal-jcwx.onrender.com/api";
 
 export function setToken(token) {
   localStorage.setItem("token", token);
