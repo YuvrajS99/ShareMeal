@@ -11,8 +11,8 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: "*",
-  credentials:true
+  origin: "https://share-meal-inky.vercel.app",
+  credentials: true
 }));
 app.use(express.json());
 
