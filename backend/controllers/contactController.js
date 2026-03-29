@@ -30,7 +30,10 @@ function buildTransport() {
   const emailUser = process.env.EMAIL_USER;
   const emailPass = process.env.EMAIL_PASS;
 
-  if (!emailUser || !emailPass) return null;
+  if (!emailUser || !emailPass) {
+    console.error("❌ EMAIL ENV NOT SET");
+    return null;
+  }
 
   return nodemailer.createTransport({
     service: "gmail",
@@ -41,29 +44,48 @@ function buildTransport() {
   });
 }
 
-async function sendContactConfirmationEmail({ name, email }) {
+async function sendContactEmails({ name, email, message }) {
   const transport = buildTransport();
+
   if (!transport) {
-    throw new Error(
-      "Email service is not configured. Please set EMAIL_USER and EMAIL_PASS in backend .env."
-    );
+    throw new Error("Email service not configured");
   }
 
-  const to = email.trim();
   const from = process.env.EMAIL_FROM || process.env.EMAIL_USER;
 
-  const text = `Hi ${name}, thank you for contacting ShareMeal. Our team will reach out soon.`;
-
+  // 🔥 1. EMAIL TO YOU (IMPORTANT)
   await transport.sendMail({
     from,
-    to,
-    subject: "ShareMeal - We received your message",
-    text
+    to: process.env.EMAIL_USER, // you receive this
+    subject: "📩 New Contact Message - ShareMeal",
+    text: `
+New message received:
+
+Name: ${name}
+Email: ${email}
+
+Message:
+${message}
+    `
   });
+
+  // 🔥 2. CONFIRMATION TO USER
+  await transport.sendMail({
+    from,
+    to: email,
+    subject: "ShareMeal - We received your message",
+    text: `Hi ${name},
+
+Thank you for contacting ShareMeal.
+We have received your message and will get back to you soon.
+
+- ShareMeal Team`
+  });
+
+  console.log("✅ Emails sent successfully");
 }
 
 module.exports = {
   validateContactInput,
-  sendContactConfirmationEmail
+  sendContactEmails
 };
-
