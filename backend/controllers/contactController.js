@@ -31,7 +31,9 @@ function buildTransport() {
   if (!emailUser || !emailPass) return null;
 
   return nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // important
     auth: {
       user: emailUser,
       pass: emailPass
