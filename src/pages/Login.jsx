@@ -13,8 +13,10 @@ export default function Login() {
   useEffect(() => {
     const token = getToken();
     if (!token) return;
+
     const decoded = decodeJwt(token);
     if (!decoded?.role) return;
+
     navigate(decoded.role === "ngo" ? "/ngo" : "/donor", { replace: true });
   }, [navigate]);
 
@@ -22,14 +24,20 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     try {
       const data = await api.login(email, password);
       if (!data?.token) throw new Error("Login failed: missing token");
+
       setToken(data.token);
 
       const role = data?.user?.role || decodeJwt(data.token)?.role;
-      if (role?.toLowerCase() === "ngo") navigate("/ngo", { replace: true });
-      else navigate("/donor", { replace: true });
+
+      if (role?.toLowerCase() === "ngo") {
+        navigate("/ngo", { replace: true });
+      } else {
+        navigate("/donor", { replace: true });
+      }
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
@@ -75,6 +83,17 @@ export default function Login() {
               {loading ? "Signing in..." : "Login"}
             </button>
 
+            {/* Register link */}
+            <p style={{ marginTop: "10px", textAlign: "center" }}>
+              Don't have an account?{" "}
+              <span
+                style={{ color: "blue", cursor: "pointer" }}
+                onClick={() => navigate("/register")}
+              >
+                Register
+              </span>
+            </p>
+
             {error && <div className="errorBox">{error}</div>}
           </form>
         </div>
@@ -82,4 +101,3 @@ export default function Login() {
     </div>
   );
 }
-
