@@ -1,5 +1,13 @@
-import React from "react";
-import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import About from "./pages/About.jsx";
@@ -11,8 +19,6 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import { getUserFromToken, logout } from "./services/api.js";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
 function AppLayout() {
   const navigate = useNavigate();
@@ -40,32 +46,38 @@ function RootRedirect() {
   const user = getUserFromToken();
   return (
     <Navigate
-      to={user?.role === "ngo" ? "/ngo" : user?.role === "donor" ? "/donor" : "/login"}
+      to={
+        user?.role === "ngo"
+          ? "/ngo"
+          : user?.role === "donor"
+          ? "/donor"
+          : "/login"
+      }
       replace
     />
   );
 }
 
-function App() {
+export default function App() {
   const location = useLocation();
 
+  // ✅ Store previous page correctly
   useEffect(() => {
-    localStorage.setItem("lastPage", location.pathname);
+    const prev = localStorage.getItem("currentPage");
+    localStorage.setItem("prevPage", prev || "/");
+    localStorage.setItem("currentPage", location.pathname);
   }, [location]);
 
   return (
-    // your routes
-  );
-}
-
-
-export default function App() {
-  return (
     <Routes>
-      <Route path="/" element={<Register />} />
+      {/* Root redirect */}
+      <Route path="/" element={<RootRedirect />} />
+
+      {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
+      {/* Layout routes */}
       <Route element={<AppLayout />}>
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
@@ -79,6 +91,7 @@ export default function App() {
           <Route path="/ngo" element={<NGODashboard />} />
         </Route>
 
+        {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
