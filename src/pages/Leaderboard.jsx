@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Trophy } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 // Mock leaderboard data (no backend endpoint currently).
 const MOCK_DONORS = [
   { donorName: "Aarav Singh", totalDonations: 12, points: 350 },
@@ -19,7 +19,13 @@ export default function Leaderboard() {
     cloned.sort((a, b) => (b[sortKey] || 0) - (a[sortKey] || 0));
     return cloned;
   }, [sortKey]);
+const navigate = useNavigate();
 
+const handleBack = () => {
+  const lastPage = localStorage.getItem("lastPage");
+  navigate(lastPage || "/");
+};
+  
   return (
     <div className="pageWrap">
       <section className="pageCard">
