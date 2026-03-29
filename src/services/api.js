@@ -15,8 +15,7 @@ export function logout() {
   localStorage.removeItem("token");
 }
 
-// Minimal JWT decoder (no external deps).
-// Assumes a standard "header.payload.signature" token.
+// JWT decode
 export function decodeJwt(token) {
   if (!token) return null;
   const parts = token.split(".");
@@ -47,11 +46,12 @@ function getAuthHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+// ✅ MAIN AXIOS INSTANCE
 export const axiosApi = axios.create({
   baseURL: API_BASE_URL
 });
 
-// Attach JWT to every request when present.
+// Attach token automatically
 axiosApi.interceptors.request.use((config) => {
   config.headers = { ...(config.headers || {}), ...getAuthHeaders() };
   return config;
@@ -86,7 +86,6 @@ export const api = {
   },
 
   getMyDonations: async () => {
-    // Spec says GET /api/donor/my, but your current backend uses /my-donations.
     try {
       const res = await axiosApi.get("/api/donor/my");
       return res.data;
@@ -104,7 +103,6 @@ export const api = {
   },
 
   getAcceptedDonations: async () => {
-    // Spec says /api/donor/my-accepted but backend uses /api/donor/accepted
     try {
       const res = await axiosApi.get("/api/donor/my-accepted");
       return res.data;
@@ -116,8 +114,6 @@ export const api = {
   },
 
   acceptDonation: async (id) => {
-    // Backend: PATCH /api/donor/:id/accept
-    // Spec: PUT /api/donor/accept/:id
     try {
       const res = await axiosApi.patch(`/api/donor/${id}/accept`);
       return res.data;
@@ -150,9 +146,8 @@ export const api = {
     }
   },
 
-  // Dashboard / misc
+  // Dashboard
   getDashboardStats: async () => {
-    // Spec says GET /api/dashboard, backend uses /api/dashboard/stats (protected)
     try {
       const res = await axiosApi.get("/api/dashboard");
       return res.data;
@@ -178,9 +173,9 @@ export const api = {
     return res.data;
   },
 
-  // Contact
+  // ✅ FIXED CONTACT (THIS WAS THE PROBLEM)
   contact: async ({ name, email, message }) => {
-    const res = await axios.post("http://localhost:5000/api/contact", {
+    const res = await axiosApi.post("/api/contact", {
       name,
       email,
       message
@@ -199,4 +194,3 @@ export const api = {
     return res.data;
   }
 };
-
