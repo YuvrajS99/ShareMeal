@@ -12,18 +12,26 @@ export default function Contact() {
 
   async function onSubmit(e) {
     e.preventDefault();
+
+    console.log("Submitting contact form..."); // DEBUG
+
     setError("");
     setSuccess("");
     setLoading(true);
+
     try {
       const payload = { name, email, message };
-      await api.contact(payload);
+
+      const res = await api.contact(payload);
+
+      console.log("Response:", res); // DEBUG
 
       setName("");
       setEmail("");
       setMessage("");
       setSuccess("Message sent successfully. Thank you!");
     } catch (err) {
+      console.error("Contact Error:", err);
       setError(err?.message || "Failed to submit message");
     } finally {
       setLoading(false);
@@ -88,17 +96,10 @@ export default function Contact() {
           {success && <div className="successBox">{success}</div>}
 
           <button className="primaryBtn" type="submit" disabled={loading}>
-            {loading ? (
-              <>
-                <span className="spinner" /> Sending...
-              </>
-            ) : (
-              "Submit"
-            )}
+            {loading ? "Sending..." : "Submit"}
           </button>
         </form>
       </section>
     </div>
   );
 }
-
