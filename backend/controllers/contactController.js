@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 
+// existing functions...
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -19,21 +20,15 @@ function validateContactInput({ name, email, message }) {
     errors.push("Message is required.");
   }
 
-  if (typeof message === "string" && message.length > 2000) {
-    errors.push("Message is too long.");
-  }
-
   return errors;
 }
 
+// 🔥 transport builder
 function buildTransport() {
   const emailUser = process.env.EMAIL_USER;
   const emailPass = process.env.EMAIL_PASS;
 
-  if (!emailUser || !emailPass) {
-    console.error("❌ EMAIL ENV NOT SET");
-    return null;
-  }
+  if (!emailUser || !emailPass) return null;
 
   return nodemailer.createTransport({
     service: "gmail",
@@ -44,7 +39,8 @@ function buildTransport() {
   });
 }
 
-async function sendContactEmails({ name, email, message }) {
+// 🔥 THIS IS YOUR FUNCTION (PUT HERE)
+async function sendContactConfirmationEmail({ name, email }) {
   const transport = buildTransport();
 
   if (!transport) {
@@ -53,39 +49,30 @@ async function sendContactEmails({ name, email, message }) {
 
   const from = process.env.EMAIL_FROM || process.env.EMAIL_USER;
 
-  // 🔥 1. EMAIL TO YOU (IMPORTANT)
-  await transport.sendMail({
-    from,
-    to: process.env.EMAIL_USER, // you receive this
-    subject: "📩 New Contact Message - ShareMeal",
-    text: `
-New message received:
-
-Name: ${name}
-Email: ${email}
-
-Message:
-${message}
-    `
-  });
-
-  // 🔥 2. CONFIRMATION TO USER
-  await transport.sendMail({
-    from,
-    to: email,
-    subject: "ShareMeal - We received your message",
-    text: `Hi ${name},
+  try {
+    const info = await transport.sendMail({
+      from,
+      to: email.trim(),
+      subject: "ShareMeal - We received your message",
+      text: `Hi ${name},
 
 Thank you for contacting ShareMeal.
+
 We have received your message and will get back to you soon.
 
 - ShareMeal Team`
-  });
+    });
 
-  console.log("✅ Emails sent successfully");
+    console.log("✅ Email sent:", info.response);
+
+  } catch (err) {
+    console.error("❌ EMAIL ERROR:", err);
+    throw err;
+  }
 }
 
+// ✅ EXPORT EVERYTHING
 module.exports = {
   validateContactInput,
-  sendContactEmails
+  sendContactConfirmationEmail
 };
