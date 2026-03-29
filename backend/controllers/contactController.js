@@ -32,12 +32,15 @@ function buildTransport() {
 
   return nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // important
+    port: 465,
+    secure: true, // 🔥 IMPORTANT CHANGE
     auth: {
       user: emailUser,
       pass: emailPass
-    }
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000
   });
 }
 
