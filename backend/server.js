@@ -11,9 +11,14 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: "https://share-meal-inky.vercel.app",
+  origin: [
+    "https://sharemeal.online",
+    "https://www.sharemeal.online"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
+
 app.use(express.json());
 
 /* ROUTES */
