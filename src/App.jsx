@@ -11,6 +11,8 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import { getUserFromToken, logout } from "./services/api.js";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 function AppLayout() {
   const navigate = useNavigate();
@@ -43,6 +45,19 @@ function RootRedirect() {
     />
   );
 }
+
+function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    localStorage.setItem("lastPage", location.pathname);
+  }, [location]);
+
+  return (
+    // your routes
+  );
+}
+
 
 export default function App() {
   return (
