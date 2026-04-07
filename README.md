@@ -6,7 +6,7 @@ ShareMeal is a full-stack web application designed to reduce food waste by conne
 
 ## 🚀 Live Demo
 
-👉 https://share-meal-inky.vercel.app/
+👉 https://sharemeal.online/
 
 ---
 
