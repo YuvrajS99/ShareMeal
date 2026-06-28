@@ -24,16 +24,16 @@ function IconCard({ icon: Icon, title, children, imageUrl }) {
 
 export default function About() {
   const HERO_IMG =
-    "https://images.unsplash.com/photo-1523475472560-d2dfddf5c9c6?auto=format&fit=crop&w=1800&q=80";
+    // "https://images.unsplash.com/photo-1523475472560-d2dfddf5c9c6?auto=format&fit=crop&w=1800&q=80";
 
   const IMG_MISSION =
-    "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80";
+    // "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80";
 
   const IMG_PROBLEM =
-    "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=900&q=80";
+    // "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=900&q=80";
 
   const IMG_SOLUTION =
-    "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=80";
+    // "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=80";
 
   return (
     <div className="aboutPage">
